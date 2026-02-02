@@ -6,6 +6,13 @@ Webman Swagger 应用插件
 ```
 composer require cdyun/webman-swagger
 ```
+### - 功能介绍
+##### 1、支持多应用，多插件；
+##### 2、支持用户登录后，访问swagger文档；
+##### 3、用户登录验证支持默认账户密码和自定义验证接口；
+##### 4、用户登录自定义验证接口同时支持内链和外链验证；
+
+
 ### - 访问插件
 ##### composer安装完成后记得重启服务，根目录执行php start.php restart
 ```
