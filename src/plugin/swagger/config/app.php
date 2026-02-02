@@ -7,7 +7,7 @@ return [
     'version' => '1.0.0',
     // swagger配置
     'swagger' => [
-        // swagger应用分组
+        // swagger应用分组，支持插件和主应用，下面两个demo可删除
         'groups' => [
             [
                 // 扫描指定应用目录，每个应用的OA\Info信息，必须且只能存在一个，所以建议写在每个应用控制器继承的 BaseController.php 上

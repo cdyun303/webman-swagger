@@ -1,4 +1,4 @@
-Webman Swagger 扩展
+Webman Swagger 应用插件
 =====
 
 ### 安装
@@ -6,62 +6,58 @@ Webman Swagger 扩展
 ```
 composer require cdyun/webman-swagger
 ```
-
-### - 服务注入
-在扩展的composer.json文件中增加如下定义：
+### - 访问插件
+##### composer安装完成后记得重启服务，根目录执行php start.php restart
 ```
-"extra": {
-    "think": {
-        "services": [
-            "Cdyun\\ThinkphpSwagger\\SwaggerService"
-        ]
-    }
-},
-```
-实现系统初始化过程中自动注册SwaggerService服务：
-```
-<?php
-namespace Cdyun\ThinkphpSwagger;
-
-use think\Route;
-use think\Service;
-
-class SwaggerService extends Service
-{
-    public function boot()
-    {
-        // 注册路由
-        $this->registerRoutes(function (Route $route) {
-            // 获取swagger Json信息，http://xxx.com/swagger/openapi.json
-            $route->get('swagger/openapi', '\\Cdyun\\ThinkphpSwagger\\SwaggerController@openapi')->ext('json');
-            // 访问swagger页面，http://xxx.com/swagger
-            $route->get('swagger', '\\Cdyun\\ThinkphpSwagger\\SwaggerController@index');
-        });
-    }
-}
+#（插件配置了路由）访问链接
+http://域名/app/swagger
 ```
 
-### - （配置文件）config/swagger.php
+### - （配置文件）config/app.php
 ```PHP
 <?php
 
 return [
-    // 应用分组
-    'groups'=>[
-        // 应用名称
-        'default'=>[
-            // 标题，会替换OA\Info中标题
-            'title'=>'通用接口文档',
-            // 描述，会替换OA\Info中描述
-            'description'=>'让开发变得更简单、更通用、更流行。',
+    ...,
+    // swagger配置
+    'swagger' => [
+        // swagger应用分组，支持插件和主应用，下面两个demo可删除
+        'groups' => [
+            [
+                // 扫描指定应用目录，每个应用的OA\Info信息，必须且只能存在一个，所以建议写在每个应用控制器继承的 BaseController.php 上
+                'scan_path' => base_path('app/v1'),
+                // 分组标题，会替换掉OA\Info中的title
+                'title' => 'v1应用接口文档',
+                // 分组描述，会替换掉OA\Info中的description
+                'description' => '让开发变得更简单、更通用、更流行。',
+            ],
+            [
+                // 分组标题
+                'title' => 'admin插件接口文档',
+                // 分组描述
+                'description' => '让开发变得更简单、更通用、更流行。',
+                // 扫描指定应用目录，每个应用的OA\Info信息，必须且只能存在一个，所以建议写在每个应用控制器继承的 BaseController.php 上
+                'scan_path' => base_path('plugin/admin'),
+            ],
         ],
-    ]
+        // 是否登录功能
+        'login' => [
+            // 是否开启
+            'enable' => true,
+            // 登录验证接口, 为空时使用默认。支持内链（/v1/core/login）和外链(http://xxx.com/v1/core/login)
+            'check_url' => '',
+            // 登录验证接口为空时，默认登录用户名
+            'username' => 'cdyun',
+            // 登录验证接口为空时，默认登录密码
+            'password' => 'swagger'
+        ]
+    ],
 ];
 ```
 
 ### - 使用注意
 ###### 1、每个应用的OA\Info信息，必须且只能存在一个，所以建议写在每个应用控制器继承的 BaseController.php 上；
-###### 2、OA\Info信息会被 config/swagger.php 中信息替换掉；
+###### 2、OA\Info中标题和描述信息会被 config/app.php 中信息替换掉；
 例： 应用V1
 ```
 <?php
