@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="zh-cn">
+<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<link rel="shortcut icon" href="/favicon.ico"/>
+		<link href="/app/swagger/css/bootstrap.min.css" rel="stylesheet">
+		<script src="/app/swagger/js/jquery.min.js"></script>
+		<title><?=htmlspecialchars($title)?></title>
+		<style>
+        html, body {
+            width: 100%;
+            height: 100%;
+        }
+
+        form {
+            width: 480px;
+            padding: 50px;
+            background-color: #fff;
+            border-radius: 8px;
+            border: 1px solid #eee;
+        }
+
+        .message-box {
+            position: fixed;
+            z-index: 10001;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .message-content {
+            background-color: #000;
+            color: #fff;
+            padding: 8px 20px;
+            font-size: 15px;
+            border-radius: 4px;
+        }
+		</style>
+</head>
+
+<body class="bg-light">
+<div class="w-100 h-100 d-flex align-items-center justify-content-center">
+		<form method="post">
+				<h3 class="mb-4">登录</h3>
+				<div class="form-group">
+						<input type="text" name="username" class="form-control" placeholder="用户名" required>
+				</div>
+				<div class="form-group">
+						<input type="password" name="password" class="form-control" placeholder="密码" required>
+				</div>
+				<div class="form-group">
+						<button type="submit" class="btn btn-primary btn-block w-100">登录</button>
+				</div>
+		</form>
+</div>
+
+<script>
+    let messageBox = ".message-box";
+
+    function message(msg, callback) {
+        if (!$(messageBox).length) {
+            $('body').append('<div class="message-box">' +
+                '<div class="message-content">' + msg + '</div></div>');
+        }
+        setTimeout(function () {
+            $(messageBox).remove();
+            callback && callback();
+        }, 1500)
+    }
+
+    $(messageBox).fadeIn().delay(1500).fadeOut(function () {
+        $(this).remove();
+    });
+
+    $('form').submit(function (event) {
+        event.preventDefault();
+        $.ajax({
+            url: "/app/swagger/login",
+            type: "POST",
+            dataType: 'json',
+            data: $(this).serialize(),
+            success: function (e) {
+                if (e.code !== 0) {
+                    message(e.msg);
+                    return;
+                }
+                message('登录成功', function () {
+                    let url = new URL(window.location.href);
+                    let redirect = url.searchParams.get('redirect');
+                    location.href = redirect && redirect.startsWith('/') && !redirect.startsWith('//') ? redirect : '/app/swagger';
+                });
+            }
+        });
+    });
+
+</script>
+
+</body>
+</html>
+
+

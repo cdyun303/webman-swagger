@@ -9,7 +9,7 @@ class Install
      * @var array
      */
     protected static $pathRelation = array (
-        'config/plugin/cdyun/webman-swagger' => 'config/plugin/cdyun/webman-swagger',
+        'plugin/swagger' => 'plugin/swagger',
     );
 
     /**
@@ -70,5 +70,5 @@ class Install
             remove_dir($path);
         }
     }
-    
+
 }
