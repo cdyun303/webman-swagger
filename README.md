@@ -76,6 +76,16 @@ use OpenApi\Attributes as OA;
 #[OA\Info(version: '1.0.0', title: 'V1')]
 class V1BaseController extends BaseController
 {
+    /**
+     * @OA\Get(
+     *     path="/index",
+     *     @OA\Response(response="200", description="{ 'code': 0, 'msg': 'ok' }")
+     * )
+     */
+	public function index(Request $request)
+    {
+        return json(['code' => 0, 'msg' => 'ok']);
+    }
     ...其他
 }
 ```
